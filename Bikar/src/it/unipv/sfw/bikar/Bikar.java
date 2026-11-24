@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import it.unipv.sfw.bikar.clienti.*;
+import it.unipv.sfw.bikar.enums.TipoCliente;
 import it.unipv.sfw.bikar.enums.TipoMezzo;
+import it.unipv.sfw.bikar.enums.TipoPatente;
 import it.unipv.sfw.bikar.mezzi.*;
 
-public class Controller {
+public class Bikar {
 	private List<Cliente> clienti;
 	private List<Mezzo> mezzi;
 	private List<Prenotazione> prenotazioni;
@@ -17,7 +19,7 @@ public class Controller {
 	private int contatoreUtilizzi;
 	private int contatorePrenotazioni;
 	
-	public Controller() {
+	public Bikar() {
 		this.clienti = new ArrayList<Cliente>();
 		this.mezzi = new ArrayList<Mezzo>();
 		this.prenotazioni = new ArrayList<Prenotazione>();
@@ -28,25 +30,50 @@ public class Controller {
 		this.contatoreUtilizzi = 1;
 	}
 	
-	public void registraCliente(Cliente c) {
-		if(c == null)
-			throw new IllegalArgumentException("Il cliente da aggiungere risulta null.");
+	public void registraClientePrivato(String id, TipoPatente patente, String nome, String cognome, int eta, Posizione posizione) {
+		if(id == null)
+			throw new IllegalArgumentException("L'id inserito non può essere nullo.");
 		for(Cliente cliente: clienti) {
-			if(cliente.getId().equalsIgnoreCase(c.getId())) {
-				throw new IllegalArgumentException("Il cliente indicato è già registrato.");
+			if(cliente.getId().equalsIgnoreCase(id)) {
+				throw new IllegalArgumentException("L'ID indicato appartiene già ad un cliente.");
 			}
 		}
-		if (c == null || c.getId() == null || c.getId().trim().isEmpty()) {
-		    throw new IllegalArgumentException("Il cliente e il suo ID non possono essere nulli o vuoti.");
+		if (patente == null) {
+		    throw new IllegalArgumentException("Il tipo di cliente non può essere nullo.");
 		}
+		Cliente c = new ClientePrivato(id, patente, nome, cognome, eta, posizione);
+		clienti.add(c);
 		
+	}
+	
+	public void registraClienteAziendale(String id, String ragioneSociale, Dipendente dipendente) {
+		if(id == null || ragioneSociale == null || dipendente == null)
+			throw new IllegalArgumentException("Argomenti non validi.");
+		for(Cliente cliente: clienti) {
+			if(cliente.getId().equalsIgnoreCase(id)) {
+				throw new IllegalArgumentException("L'ID indicato appartiene già ad un cliente.");
+			}
+		}
+		Cliente c = new ClienteAziendale(id, ragioneSociale, dipendente);
 		clienti.add(c);
 	}
 	
-	public String consultaParco(Cliente c) {
-	    if (c == null || c.getPosizione() == null) {
-	        throw new IllegalArgumentException("Cliente o posizione non validi.");
+	public String consultaParco(String id) {
+	    if (id == null) {
+	        throw new IllegalArgumentException("L'ID inserito risulta nullo.");
 	    }
+	    Cliente c = null;
+	    for(Cliente cliente: clienti) {
+	    	if(cliente.getId().equalsIgnoreCase(id)) {
+	    		c = cliente;
+	    		break;
+	    	}
+	    }
+	    
+	    if (c == null) {
+	        throw new IllegalStateException("Non è stato trovato nessun cliente con quell'ID.");
+	    }
+	    
 	    Posizione posCliente = c.getPosizione();
 
 	    mezzi.sort(Comparator.comparingDouble(
@@ -57,7 +84,7 @@ public class Controller {
 	    for (Mezzo m : mezzi) {
 	        double distanza = m.getPosizione().calcolaDistanza(posCliente);
 	        sb.append(m.toString())
-	          .append(String.format(" - Distanza: %.2f km", distanza))
+	          .append(String.format(" - Distanza: " + distanza + " km"))
 	          .append("\n");
 	    }
 	    return sb.toString();
@@ -77,11 +104,23 @@ public class Controller {
 		}
 	}
 	
-	public String consultaParco(Cliente c, TipoMezzo tipo) {
-	    if (c == null || c.getPosizione() == null || tipo == null) {
+	public String consultaParco(String id, TipoMezzo tipo) {
+	    if (id == null || tipo == null) {
 	        throw new IllegalArgumentException("Dati non validi.");
 	    }
-
+	    
+	    Cliente c = null;
+	    for(Cliente cliente: clienti) {
+	    	if(cliente.getId().equalsIgnoreCase(id)) {
+	    		c = cliente;
+	    		break;
+	    	}
+	    }
+	    
+	    if (c == null) {
+	        throw new IllegalStateException("Non è stato trovato nessun cliente con quell'ID.");
+	    }
+	    
 	    Posizione posCliente = c.getPosizione();
 	    StringBuilder sb = new StringBuilder();
 
@@ -95,14 +134,14 @@ public class Controller {
 	    return sb.toString();
 	}
 	
-	public Prenotazione prenotaMezzo(Cliente c, Mezzo m) {
-		if(c == null)
-			throw new IllegalArgumentException("Il cliente indicato risulta null.");
-		else if(m == null)
-			throw new IllegalArgumentException("Il mezzo indicato risulta null.");
+	public Prenotazione prenotaMezzo(String id, String targa) {
+		if(id == null)
+			throw new IllegalArgumentException("L'ID inserito risulta nullo.");
+		else if(targa == null)
+			throw new IllegalArgumentException("La targa inserita risulta null.");
 		Cliente clienteRegistrato = null;
 		for (Cliente cliente : clienti) {
-			if (cliente.getId().equalsIgnoreCase(c.getId())) {
+			if (cliente.getId().equalsIgnoreCase(id)) {
 				clienteRegistrato = cliente;
 				break;
 			}
@@ -111,6 +150,13 @@ public class Controller {
 			throw new IllegalArgumentException("Cliente non registrato nel sistema.");
 		}
 		
+		Mezzo m= null;
+		for (Mezzo mezzo : mezzi) {
+			if (mezzo.getTarga().equalsIgnoreCase(targa)) {
+				m = mezzo;
+				break;
+			}
+		}
 		if (!this.mezzi.contains(m)) {
 			throw new IllegalArgumentException("Il mezzo indicato non appartiene al parco Bikar.");
 		}
@@ -129,9 +175,16 @@ public class Controller {
 		throw new IllegalArgumentException("Il cliente non soddisfa i requisiti di età o patente richiesti.");
 	}
 	
-	public Utilizzo avviaUtilizzo(Prenotazione p) {
-		if(!prenotazioni.contains(p))
-			throw new IllegalArgumentException("Prenotazione non esistente.");
+	public Utilizzo avviaUtilizzo(String id) {
+		Prenotazione p = null;
+		for(Prenotazione prenot: prenotazioni) {
+			if(prenot.getId().equalsIgnoreCase(id)) {
+				p = prenot;
+				break;
+			}
+		}
+		if(p == null)
+			throw new IllegalStateException("Non è stata trovata alcuna prenotazione con questo ID.");
 		Utilizzo u = new Utilizzo("U-"+this.contatoreUtilizzi++, p);
 		utilizzi.add(u);
 		return u;

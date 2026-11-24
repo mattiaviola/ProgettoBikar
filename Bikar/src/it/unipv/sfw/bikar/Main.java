@@ -9,7 +9,7 @@ import it.unipv.sfw.bikar.mezzi.motocicli.*;
 
 public class Main {
     public static void main(String[] args) {
-        Controller controller = new Controller();
+        Bikar controller = new Bikar();
 
         Amministratore admin = new Amministratore();
         admin.setId("A01");
