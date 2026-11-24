@@ -77,19 +77,21 @@ public class Controller {
 		}
 	}
 	
-	public String consultaParco(TipoMezzo tipo) {
-	    if (tipo == null) {
-	        throw new IllegalArgumentException("La tipologia di mezzo non può essere null.");
+	public String consultaParco(Cliente c, TipoMezzo tipo) {
+	    if (c == null || c.getPosizione() == null || tipo == null) {
+	        throw new IllegalArgumentException("Dati non validi.");
 	    }
+
+	    Posizione posCliente = c.getPosizione();
 	    StringBuilder sb = new StringBuilder();
-	    for (Mezzo m : mezzi) {
-	        if (m.getTipo() == tipo) {
-	            sb.append(m.toString()).append("\n");
-	        }
-	    }
-	    if (sb.length() == 0) {
-	        return "Nessun mezzo trovato per la tipologia: " + tipo;
-	    }
+
+	    mezzi.stream()
+	        .filter(m -> m.getTipo() == tipo)
+	        .sorted(Comparator.comparingDouble(
+	            m -> m.getPosizione().calcolaDistanza(posCliente)
+	        ))
+	        .forEach(m -> sb.append(m.toString()).append("\n"));
+
 	    return sb.toString();
 	}
 	
@@ -117,14 +119,14 @@ public class Controller {
 			throw new IllegalStateException("Il mezzo " + m.getTarga() + " non è disponibile.");
 		}
 		
-		Prenotazione prenotazione = null;
-		if(m.verificaRequisiti(c.getEta(), c.getPatente())) {
-			prenotazione = new Prenotazione("P-"+this.contatorePrenotazioni++, clienteRegistrato, m);
+		if(m.verificaRequisiti(clienteRegistrato.getEta(), clienteRegistrato	.getPatente())) {
+			Prenotazione prenotazione = new Prenotazione("P-"+this.contatorePrenotazioni++, clienteRegistrato, m);
 			this.prenotazioni.add(prenotazione);
-			m.setDisponibile(false); 
+			m.setDisponibile(false);
+			return prenotazione;
 		}
 	
-		return prenotazione;
+		throw new IllegalArgumentException("Il cliente non soddisfa i requisiti di età o patente richiesti.");
 	}
 	
 	public Utilizzo avviaUtilizzo(Prenotazione p) {

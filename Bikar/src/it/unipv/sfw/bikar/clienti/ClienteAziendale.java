@@ -6,9 +6,10 @@ public class ClienteAziendale extends Cliente{
 	private String ragioneSociale;
 	private Dipendente dipendente;
 	
-	public ClienteAziendale(String id, String ragioneSociale) {
+	public ClienteAziendale(String id, String ragioneSociale, Dipendente dipendente) {
 		super(id);
 		this.ragioneSociale = ragioneSociale;
+		this.setDipendente(dipendente);
 	}
 
 	public String getRagioneSociale() {
