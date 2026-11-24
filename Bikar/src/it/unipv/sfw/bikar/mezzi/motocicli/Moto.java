@@ -2,6 +2,7 @@ package it.unipv.sfw.bikar.mezzi.motocicli;
 
 import it.unipv.sfw.bikar.Posizione;
 import it.unipv.sfw.bikar.TipoAlimentazione;
+import it.unipv.sfw.bikar.enums.TipoMezzo;
 import it.unipv.sfw.bikar.enums.TipoPatente;
 
 public class Moto extends Motociclo{
@@ -24,5 +25,10 @@ public class Moto extends Motociclo{
 			return true;
 		else
 			return false;
+	}
+	
+	@Override
+	public TipoMezzo getTipo() {
+		return TipoMezzo.MOTO;
 	}
 }

@@ -1,5 +1,6 @@
 package it.unipv.sfw.bikar.mezzi.autoveicoli;
 import it.unipv.sfw.bikar.*;
+import it.unipv.sfw.bikar.enums.TipoMezzo;
 import it.unipv.sfw.bikar.enums.TipoPatente;
 
 public class Auto extends Autoveicolo{
@@ -23,5 +24,10 @@ public class Auto extends Autoveicolo{
 			return true;
 		else
 			return false;
+	}
+	
+	@Override
+	public TipoMezzo getTipo() {
+		return TipoMezzo.AUTO;
 	}
 }

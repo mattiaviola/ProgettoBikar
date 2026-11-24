@@ -33,4 +33,11 @@ public class ClienteAziendale extends Cliente{
 	public Posizione getPosizione() {
 	    return this.dipendente.getPosizione();
 	}
+	
+	public void setDipendente(Dipendente dipendente) {
+	    if (dipendente == null) {
+	        throw new IllegalArgumentException("Il dipendente designato non può essere null.");
+	    }
+	    this.dipendente = dipendente;
+	}
 }

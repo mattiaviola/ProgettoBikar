@@ -1,5 +1,6 @@
 package it.unipv.sfw.bikar.mezzi;
 import it.unipv.sfw.bikar.*;
+import it.unipv.sfw.bikar.enums.TipoMezzo;
 import it.unipv.sfw.bikar.enums.TipoPatente;
 
 public abstract class Mezzo {
@@ -65,5 +66,6 @@ public abstract class Mezzo {
 	
 	public abstract boolean verificaRequisiti(int eta, TipoPatente patente);
 	
+	public abstract TipoMezzo getTipo();
 	
 }

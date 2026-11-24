@@ -1,5 +1,6 @@
 package it.unipv.sfw.bikar.mezzi.autoveicoli;
 import it.unipv.sfw.bikar.*;
+import it.unipv.sfw.bikar.enums.TipoMezzo;
 import it.unipv.sfw.bikar.enums.TipoPatente;
 
 
@@ -20,9 +21,14 @@ public class Furgone extends Autoveicolo{
 	
 	@Override
 	public boolean verificaRequisiti(int eta, TipoPatente patente) {
-		if(eta >= 18 && eta <= 70 && patente == TipoPatente.B)
+		if(eta >= 18 && eta < 70 && patente == TipoPatente.B)
 			return true;
 		else
 			return false;
+	}
+	
+	@Override
+	public TipoMezzo getTipo() {
+		return TipoMezzo.FURGONE;
 	}
 }
