@@ -1,5 +1,6 @@
 package it.unipv.sfw.bikar.clienti;
 import it.unipv.sfw.bikar.*;
+import it.unipv.sfw.bikar.enums.TipoPatente;
 
 public class ClientePrivato extends Cliente{
 	private TipoPatente patente;
@@ -14,10 +15,6 @@ public class ClientePrivato extends Cliente{
 		this.cognome = cognome;
 		this.eta = eta;
 		this.posizione = posizione;
-	}
-
-	public TipoPatente getPatente() {
-		return patente;
 	}
 
 	public void setPatente(TipoPatente patente) {
@@ -40,20 +37,27 @@ public class ClientePrivato extends Cliente{
 		this.cognome = cognome;
 	}
 
-	public int getEta() {
-		return eta;
-	}
-
 	public void setEta(int eta) {
 		this.eta = eta;
 	}
 
-	public Posizione getPosizione() {
-		return posizione;
-	}
-
 	public void setPosizione(Posizione posizione) {
 		this.posizione = posizione;
+	}
+	
+	@Override
+	public int getEta() {
+	    return this.eta;
+	}
+
+	@Override
+	public TipoPatente getPatente() {
+	    return this.patente;
+	}
+
+	@Override
+	public Posizione getPosizione() {
+	    return this.posizione;
 	}
 	
 	

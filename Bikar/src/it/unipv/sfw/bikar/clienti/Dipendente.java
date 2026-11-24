@@ -1,5 +1,6 @@
 package it.unipv.sfw.bikar.clienti;
 import it.unipv.sfw.bikar.*;
+import it.unipv.sfw.bikar.enums.*;
 
 public class Dipendente {
 	private String nome, cognome;

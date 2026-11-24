@@ -2,7 +2,7 @@ package it.unipv.sfw.bikar.mezzi.motocicli;
 
 import it.unipv.sfw.bikar.Posizione;
 import it.unipv.sfw.bikar.TipoAlimentazione;
-import it.unipv.sfw.bikar.TipoPatente;
+import it.unipv.sfw.bikar.enums.TipoPatente;
 
 public class Moto extends Motociclo{
 	public Moto(String targa, Posizione posizione, TipoAlimentazione alimentazione) {

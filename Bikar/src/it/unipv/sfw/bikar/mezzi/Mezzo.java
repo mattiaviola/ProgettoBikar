@@ -1,5 +1,6 @@
 package it.unipv.sfw.bikar.mezzi;
 import it.unipv.sfw.bikar.*;
+import it.unipv.sfw.bikar.enums.TipoPatente;
 
 public abstract class Mezzo {
 	private String targa;
@@ -12,6 +13,14 @@ public abstract class Mezzo {
 		this.targa = targa;
 		this.posizione = posizione;
 		this.disponibile = true;
+	}
+	
+	@Override
+	public String toString() {
+		return "Targa: " + this.targa + " - Posizione: " + this.posizione.getLatitudine() + "; " + this.posizione.getLongitudine()
+        + " - Alimentazione: " + this.alimentazione
+        + " - Tariffa: " + this.tariffa + " €/min"
+        + " - Disponibile: " + (this.disponibile ? "Sì" : "No");
 	}
 
 	public String getTarga() {
